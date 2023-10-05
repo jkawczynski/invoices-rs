@@ -1,0 +1,47 @@
+{% match clients %} {% when Some with (val) %}
+<table>
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Company Name</th>
+      <th scope="col">Address Line 1</th>
+      <th scope="col">Address Line 2</th>
+      <th scope="col">Vat Number</th>
+      <th scope="col">Country</th>
+      <th scope="col">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for client in val %}
+    <tr id="client-{{loop.index}}">
+      <th scope="row">{{loop.index}}</th>
+      <td>
+        <a
+          hx-get="/clients/{{client.id}}"
+          hx-push-url="true"
+          hx-select="article"
+          hx-target="article"
+          hx-swap="outerHTML"
+          >{{ client.company_name }}</a
+        >
+      </td>
+      <td>{{ client.addr_line_1 }}</td>
+      <td>{{ client.addr_line_2 }}</td>
+      <td>{{ client.vat_number }}</td>
+      <td>{{ client.country}}</td>
+      <td>
+        <button
+          class="warning"
+          hx-delete="/api/clients/{{client.id}}"
+          hx-confirm="You sure you want to delete?"
+          hx-target="closest tr"
+          hx-swap="outerHTML"
+        >
+          Delete
+        </button>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% when None %} No clients {% endmatch %}

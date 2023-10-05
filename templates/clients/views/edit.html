@@ -1,0 +1,86 @@
+{% extends "../base.html" %} {% block page_title %} Edit client {% endblock %}
+{% block clients_content %}
+{% match message %} {% when Some with (val) %}
+<h2>{{ val }}</h2>
+{% when None %} test {% endmatch %}
+<form
+  hx-put="/clients/{{client.id}}"
+  hx-target="article"
+  hx-select="article"
+  hx-ext="json-enc"
+>
+  <label for="company_name">
+    Company Name
+    <input
+      type="text"
+      id="company_name"
+      name="company_name"
+      placeholder="Company Name"
+      value="{{client.company_name}}"
+      required
+    />
+  </label>
+
+  <label for="addr_line_1">
+    Address Line 1
+    <input
+      type="text"
+      id="addr_line_1"
+      name="addr_line_1"
+      placeholder="Address Line 1"
+      value="{{client.addr_line_1}}"
+      required
+    />
+  </label>
+
+  <label for="addr_line_2">
+    Address Line 2
+    <input
+      type="text"
+      id="addr_line_2"
+      name="addr_line_2"
+      placeholder="Address Line 2"
+      value="{{client.addr_line_2}}"
+      required
+    />
+  </label>
+
+  <label for="vat_number">
+    Vat Number
+    <input
+      type="text"
+      id="vat_number"
+      name="vat_number"
+      placeholder="Vat Number"
+      value="{{client.vat_number}}"
+      required
+    />
+  </label>
+
+  <label for="country">
+    Country
+    <input
+      type="text"
+      id="country"
+      name="country"
+      placeholder="Country"
+      value="{{client.country}}"
+      required
+    />
+  </label>
+
+  <div class="grid">
+    <button
+      type="button"
+      role="button"
+      class="contrast outline"
+      hx-get="/components/clients/table"
+      hx-replace-url="/clients"
+      hx-target="#clients-content"
+    >
+      Cancel
+    </button>
+    <button type="submit">Save</button>
+  </div>
+</form>
+{% endblock %}

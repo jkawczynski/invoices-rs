@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    {% block head %}
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"
+    />
+    <title>{% block title %}{% endblock %} - Invoice</title>
+    <script src="https://unpkg.com/htmx.org@1.9.6"></script>
+    <script src="https://unpkg.com/htmx.org/dist/ext/json-enc.js"></script>
+    {% endblock %}
+  </head>
+  <body>
+    <div class="hero" data-theme="dark">
+      <nav class="container-fluid">
+        <ul>
+          <li>
+            <a href="/" class="contrast">
+              <strong>Invoices</strong>
+            </a>
+          </li>
+        </ul>
+        <ul>
+          <li>
+            <a href="/settings" class="contrast">Settings</a>
+          </li>
+          <li>
+            <a
+              hx-get="/clients"
+              hx-push-url="true"
+              hx-target="main"
+              hx-select="article"
+              class="contrast"
+              >Clients</a
+            >
+          </li>
+        </ul>
+      </nav>
+    </div>
+    <main class="container">{% block content %}{% endblock %}</main>
+    <footer>{% block footer %} {% endblock %}</footer>
+  </body>
+
+  <script>
+    document.body.addEventListener("htmx:beforeSwap", function (evt) {
+      if (evt.detail.xhr.status === 204) {
+        evt.detail.shouldSwap = true;
+        evt.detail.isError = false;
+      }
+    });
+  </script>
+</html>
