@@ -6,5 +6,5 @@ pub mod clients;
 pub mod schemas;
 
 pub async fn index() -> impl IntoResponse {
-    IndexTemplate {}
+    IndexTemplate::default()
 }

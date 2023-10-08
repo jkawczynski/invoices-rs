@@ -2,52 +2,43 @@
 <html lang="en">
   <head>
     {% block head %}
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"
-    />
-    <title>{% block title %}{% endblock %} - Invoice</title>
-    <script src="https://unpkg.com/htmx.org@1.9.6"></script>
-    <script src="https://unpkg.com/htmx.org/dist/ext/json-enc.js"></script>
+    <title>Invoice</title>
     {% endblock %}
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;0,800;1,600&family=Roboto:wght@400;500;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <link href="/static/output.css" rel="stylesheet" />
+    <style>
+      html {
+        font-family: "JetBrains Mono", monospace;
+        font-family: "Roboto", sans-serif;
+      }
+    </style>
+    <script src="/static/output.js"></script>
   </head>
   <body>
-    <div class="hero" data-theme="dark">
-      <nav class="container-fluid">
-        <ul>
-          <li>
-            <a href="/" class="contrast">
-              <strong>Invoices</strong>
-            </a>
-          </li>
-        </ul>
-        <ul>
-          <li>
-            <a href="/settings" class="contrast">Settings</a>
-          </li>
-          <li>
-            <a
-              hx-get="/clients"
-              hx-push-url="true"
-              hx-target="main"
-              hx-select="article"
-              class="contrast"
-              >Clients</a
-            >
-          </li>
-        </ul>
-      </nav>
+    {% include "navbar.html" %}
+    <div id="content">
+      {% match message %} {% when Some with (msg) %} {% include
+      "components/message.html" %} {% when None %} {% endmatch %}
+      <div class="container mx-auto px-4 mt-8">
+        <div class="container mt-4">
+          <div class="grid grid-cols-1 divide-y">
+            <div class="flex flex-row py-4">
+              <div class="md:basis-1/2 sm:basis-full">
+                <p class="text-5xl text-gray-800">{{ page_title }}</p>
+              </div>
+              <div class="md:basis-1/2 sm:basis-full content-end text-right">
+                {% block page_title_actions %} {% endblock %}
+              </div>
+            </div>
+          </div>
+          <div>{% block content %}{% endblock %}</div>
+        </div>
+      </div>
     </div>
-    <main class="container">{% block content %}{% endblock %}</main>
-    <footer>{% block footer %} {% endblock %}</footer>
   </body>
-
-  <script>
-    document.body.addEventListener("htmx:beforeSwap", function (evt) {
-      if (evt.detail.xhr.status === 204) {
-        evt.detail.shouldSwap = true;
-        evt.detail.isError = false;
-      }
-    });
-  </script>
 </html>

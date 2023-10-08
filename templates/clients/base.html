@@ -1,13 +1,2 @@
-{% extends "../base.html" %} {% block content %}
-<div>
-  <article>
-    {% match error %} {% when Some with (val) %}
-    <h3>Error loading clients</h3>
-    <h4>{{ val }}</h4>
-    {% when None %}
-    <header>{% block page_title %} {% endblock %}</header>
-    <div>{% block clients_content %}{% endblock %}</div>
-    {% endmatch %}
-  </article>
-</div>
-{% endblock %}
+{% extends "../base.html" %} {% block content %} {% block clients_content %}{%
+endblock %} {% endblock %}

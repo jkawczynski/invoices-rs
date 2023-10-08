@@ -10,8 +10,8 @@ pub struct Client {
     pub country: String,
 }
 
-impl Client {
-    pub fn default() -> Self {
+impl Default for Client {
+    fn default() -> Self {
         Client {
             id: String::from(""),
             company_name: String::from(""),

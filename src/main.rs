@@ -1,8 +1,10 @@
-use axum::{
-    routing::{delete, get},
-    Router,
-};
+use askama_axum::{IntoResponse, Response};
+use axum::body::{boxed, Body, BoxBody};
+use axum::http::{Request, StatusCode, Uri};
+use axum::{routing::get, Router};
+use error::AppError;
 use std::net::SocketAddr;
+use tower_http::services::ServeDir;
 
 // sqlx
 use anyhow::Context;
@@ -14,8 +16,10 @@ use sqlx::{
 
 use std::env;
 use std::str::FromStr;
+use tower::ServiceExt;
 
 mod controllers;
+mod error;
 mod models;
 mod services;
 mod templates;
@@ -34,17 +38,28 @@ pub struct AppState {
 }
 
 #[tokio::main]
-async fn main() -> anyhow::Result<()> {
+async fn main() -> anyhow::Result<(), AppError> {
     let db_pool = prepare_database().await?;
 
     let app_state = AppState { db_pool };
 
     let app = Router::new()
+        .nest_service("/static", get(static_file_handler))
         .route("/", get(controllers::index))
-        .route("/clients", get(controllers::clients::get_clients_list))
+        .route(
+            "/clients",
+            get(controllers::clients::get_clients_list)
+                .post(controllers::clients::post_create_client),
+        )
+        .route(
+            "/clients/create",
+            get(controllers::clients::get_create_client),
+        )
         .route(
             "/clients/:client_uuid",
-            get(controllers::clients::get_client).put(controllers::clients::put_client),
+            get(controllers::clients::get_client)
+                .put(controllers::clients::put_client)
+                .delete(controllers::clients::delete_client),
         )
         .with_state(app_state);
 
@@ -74,4 +89,29 @@ async fn prepare_database() -> anyhow::Result<Pool<Sqlite>> {
     // prepare schema in db if it does not yet exist
     sqlx::migrate!().run(&pool).await?;
     Ok(pool)
+}
+
+async fn static_file_handler(uri: Uri) -> Result<Response<BoxBody>, (StatusCode, String)> {
+    let res = get_static_file(uri.clone()).await?;
+
+    if res.status() == StatusCode::NOT_FOUND {
+        match format!("{}", uri).parse() {
+            Ok(uri_html) => get_static_file(uri_html).await,
+            Err(_) => Err((StatusCode::INTERNAL_SERVER_ERROR, "Invalid URI".to_string())),
+        }
+    } else {
+        Ok(res)
+    }
+}
+
+async fn get_static_file(uri: Uri) -> Result<Response<BoxBody>, (StatusCode, String)> {
+    let req = Request::builder().uri(uri).body(Body::empty()).unwrap();
+
+    match ServeDir::new("dist").oneshot(req).await {
+        Ok(res) => Ok(res.map(boxed)),
+        Err(err) => Err((
+            StatusCode::INTERNAL_SERVER_ERROR,
+            format!("Something went wrong: {}", err),
+        )),
+    }
 }
