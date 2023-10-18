@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use askama::Template;
 
 use crate::models::Client;
@@ -54,6 +56,7 @@ pub struct ClientEditTemplate {
     pub client: Client,
     pub error: Option<String>,
     pub message: Option<MessageContext>,
+    pub errors: HashMap<String, String>,
 }
 impl AppResponse<Client> for ClientEditTemplate {}
 impl Default for ClientEditTemplate {
@@ -63,6 +66,7 @@ impl Default for ClientEditTemplate {
             client: Client::default(),
             error: None,
             message: None,
+            errors: HashMap::new(),
         }
     }
 }
@@ -99,8 +103,10 @@ impl SuccessTemplate for ClientEditTemplate {
 #[template(path = "clients/views/create.html")]
 pub struct ClientCreateTemplate {
     pub page_title: String,
+    pub client: Client,
     pub error: Option<String>,
     pub message: Option<MessageContext>,
+    pub errors: HashMap<String, String>,
 }
 
 impl ErrorTemplate for ClientCreateTemplate {
@@ -108,6 +114,7 @@ impl ErrorTemplate for ClientCreateTemplate {
         ClientCreateTemplate {
             error: Some(error),
             message: None,
+            errors: HashMap::new(),
             ..Default::default()
         }
     }
@@ -119,6 +126,8 @@ impl Default for ClientCreateTemplate {
             page_title: "Create new Client".to_string(),
             error: None,
             message: None,
+            client: Client::default(),
+            errors: HashMap::new(),
         }
     }
 }

@@ -1,7 +1,7 @@
-use askama_axum::IntoResponse;
+use askama_axum::{IntoResponse, Response};
 use axum::{
     extract::{Path, State},
-    Json,
+    Form,
 };
 
 use crate::{
@@ -17,6 +17,12 @@ use crate::{
 };
 
 use super::schemas::CreateClientSchema;
+
+fn with_redirect(mut response: Response, redirect_path: &str) -> Response {
+    let headers = response.headers_mut();
+    headers.insert("HX-Push-Url", redirect_path.parse().unwrap());
+    return response;
+}
 
 pub async fn get_clients_list(
     State(state): State<AppState>,
@@ -38,7 +44,7 @@ pub async fn get_client(
 pub async fn put_client(
     State(state): State<AppState>,
     Path(client_id): Path<String>,
-    Json(body): Json<CreateClientSchema>,
+    Form(body): Form<CreateClientSchema>,
 ) -> anyhow::Result<impl IntoResponse, AppError> {
     let client_uuid = uuid::Uuid::parse_str(&client_id).unwrap();
     edit_client_by_uuid(&state.db_pool, client_uuid, body).await?;
@@ -68,10 +74,7 @@ pub async fn delete_client(
         }),
         ..Default::default()
     };
-    let mut response = template.into_response();
-    let headers = response.headers_mut();
-    headers.insert("HX-Push-Url", "/clients".parse().unwrap());
-    return Ok(response);
+    return Ok(with_redirect(template.into_response(), "/clients"));
 }
 
 pub async fn get_create_client() -> impl IntoResponse {
@@ -80,10 +83,9 @@ pub async fn get_create_client() -> impl IntoResponse {
 
 pub async fn post_create_client(
     State(state): State<AppState>,
-    Json(body): Json<CreateClientSchema>,
+    Form(body): Form<CreateClientSchema>,
 ) -> anyhow::Result<impl IntoResponse, AppError> {
-    let client_id = uuid::Uuid::new_v4();
-    create_client(&state.db_pool, client_id, body).await?;
+    create_client(&state.db_pool, body).await?;
 
     let clients = get_clients(&state.db_pool).await?;
     let template = ClientsListTemplate {
@@ -94,8 +96,5 @@ pub async fn post_create_client(
         }),
         ..Default::default()
     };
-    let mut response = template.into_response();
-    let headers = response.headers_mut();
-    headers.insert("HX-Push-Url", "/clients".parse().unwrap());
-    return Ok(response);
+    return Ok(with_redirect(template.into_response(), "/clients"));
 }

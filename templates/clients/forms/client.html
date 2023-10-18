@@ -1,0 +1,128 @@
+<div class="md:w-1/2 sm:w-full mx-auto">
+  <div class="flex flex-wrap">
+    <div class="w-full px-3 mb-6 md:mb-0">
+      <label
+        class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+        for="grid-first-name"
+      >
+        Company Name
+      </label>
+      <input
+        {% if errors.contains_key("company_name") %}
+        class="border-red-500 appearance-none block w-full bg-gray-200 text-gray-700 border rounded pt-3 px-4 mb-2 leading-tight focus:outline-none focus:bg-white"
+        {% else %}
+        class="appearance-none block w-full bg-gray-200 text-gray-700 border rounded pt-3 px-4 mb-2 leading-tight focus:outline-none focus:bg-white"
+        {% endif %}
+        type="text"
+        id="company_name"
+        name="company_name"
+        placeholder="Company Name"
+        value="{{ client.company_name }}"
+        required
+      />
+      {% match errors.get("company_name") %} {% when Some with (error) %}
+      <p class="mb-2 text-red-500 text-xs italic">{{ error }}</p>
+      {% else %} {% endmatch %}
+    </div>
+    <div class="w-1/2 px-3 mb-6 md:mb-0">
+      <label
+        class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+        for="grid-first-name"
+      >
+        Address Line 1
+      </label>
+      <input
+        class="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+        type="text"
+        id="addr_line_1"
+        name="addr_line_1"
+        placeholder="Address Line 1"
+        value="{{ client.addr_line_1 }}"
+        required
+      />
+      {% match errors.get("addr_line_1") %} {% when Some with (error) %}
+      <p class="mb-2 text-red-500 text-xs italic">{{ error }}</p>
+      {% else %} {% endmatch %}
+    </div>
+    <div class="w-1/2 px-3 mb-6 md:mb-0">
+      <label
+        class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+        for="grid-first-name"
+      >
+        Address Line 2
+      </label>
+      <input
+        class="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+        type="text"
+        id="addr_line_2"
+        name="addr_line_2"
+        placeholder="Address Line 2"
+        value="{{ client.addr_line_2 }}"
+        required
+      />
+      {% match errors.get("addr_line_2") %} {% when Some with (error) %}
+      <p class="mb-2 text-red-500 text-xs italic">{{ error }}</p>
+      {% else %} {% endmatch %}
+    </div>
+    <div class="w-1/2 px-3 mb-6 md:mb-0">
+      <label
+        class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+        for="vat_number"
+      >
+        Vat Number
+      </label>
+      <input
+        class="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+        type="text"
+        id="vat_number"
+        name="vat_number"
+        placeholder="VAT Number"
+        value="{{ client.vat_number }}"
+        required
+      />
+      {% match errors.get("vat_number") %} {% when Some with (error) %}
+      <p class="mb-2 text-red-500 text-xs italic">{{ error }}</p>
+      {% else %} {% endmatch %}
+    </div>
+    <div class="w-1/2 px-3 mb-6 md:mb-0">
+      <label
+        class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+        for="grid-country"
+      >
+        Country
+      </label>
+      <input
+        class="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+        type="text"
+        id="country"
+        name="country"
+        placeholder="Country"
+        value="{{ client.country }}"
+        required
+      />
+      {% match errors.get("country") %} {% when Some with (error) %}
+      <p class="mb-2 text-red-500 text-xs italic">{{ error }}</p>
+      {% else %} {% endmatch %}
+    </div>
+    <div class="w-full px-3 mb-6 md:mb-0">
+      <button
+        class="w-full hover:bg-gray-300 font-bold py-2 px-4 cursor-pointer border border-gray-800"
+        hx-get="/clients"
+        hx-replace-url="true"
+        hx-target="#content"
+        hx-select="#content"
+      >
+        Cancel
+      </button>
+    </div>
+    <div class="w-full px-3 mb-6 md:mb-0 py-3">
+      <button
+        class="w-full bg-sky-700 hover:bg-sky-900 text-white font-bold py-2 px-4 cursor-pointer"
+        type="submit"
+        hx-disable-elt="this"
+      >
+        Save
+      </button>
+    </div>
+  </div>
+</div>
