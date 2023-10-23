@@ -1,6 +1,6 @@
 {% extends "../base.html" %} {% block clients_content %}
 <form
-  hx-put="/clients/{{client.id}}"
+  hx-put="/clients/{{ client.id.as_ref().unwrap() }}"
   hx-target="#content"
   hx-select="#content"
   hx-disinherit="*"

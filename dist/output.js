@@ -2966,24 +2966,6 @@
     }
   });
 
-  // node_modules/htmx.org/dist/ext/json-enc.js
-  var require_json_enc = __commonJS({
-    "node_modules/htmx.org/dist/ext/json-enc.js"() {
-      htmx.defineExtension("json-enc", {
-        onEvent: function(name, evt) {
-          if (name === "htmx:configRequest") {
-            evt.detail.headers["Content-Type"] = "application/json";
-          }
-        },
-        encodeParameters: function(xhr, parameters, elt) {
-          xhr.overrideMimeType("text/json");
-          return JSON.stringify(parameters);
-        }
-      });
-    }
-  });
-
   // web/app.js
   window.htmx = require_htmx_min();
-  require_json_enc();
 })();

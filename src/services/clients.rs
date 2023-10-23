@@ -1,7 +1,6 @@
 use sqlx::{sqlite::SqliteQueryResult, Pool, Sqlite};
 
 use crate::{
-    controllers::schemas::CreateClientSchema,
     error::{AppError, Result},
     models::Client,
 };
@@ -47,7 +46,7 @@ pub async fn delete_client_by_uuid(
 pub async fn edit_client_by_uuid(
     db_pool: &Pool<Sqlite>,
     client_id: uuid::Uuid,
-    client: CreateClientSchema,
+    client: Client,
 ) -> Result<SqliteQueryResult, AppError> {
     let sql = "UPDATE clients SET
     company_name = ?, addr_line_1 = ?, addr_line_2 = ?, vat_number = ?, country = ?
@@ -69,7 +68,7 @@ pub async fn edit_client_by_uuid(
 
 pub async fn create_client(
     db_pool: &Pool<Sqlite>,
-    client: CreateClientSchema,
+    client: Client,
 ) -> Result<SqliteQueryResult, AppError> {
     let client_id = uuid::Uuid::new_v4();
     let sql = "INSERT INTO clients 
