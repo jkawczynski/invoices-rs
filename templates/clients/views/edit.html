@@ -2,6 +2,7 @@
 <form
   hx-put="/clients/{{ client.id.as_ref().unwrap() }}"
   hx-target="#content"
+  hx-target-400="#content"
   hx-select="#content"
   hx-disinherit="*"
   hx-swap="outerHTML"

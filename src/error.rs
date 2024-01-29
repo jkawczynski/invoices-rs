@@ -63,7 +63,7 @@ impl IntoResponse for AppFormValidationError {
                 let mut template = ClientCreateTemplate::default();
                 template.client = err.input_form;
                 template.errors = err.errors;
-                return template.into_response();
+                return (StatusCode::BAD_REQUEST, template).into_response();
             }
             _ => (
                 StatusCode::INTERNAL_SERVER_ERROR,
